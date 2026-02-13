@@ -1,6 +1,10 @@
-Phase 1:
+**Phase 1:**
 This notebook analyzes hourly power output for multiple renewable energy technologies using 2025 data. 
 For geothermal energy, hourly output data (MW) are summarized and converted into total energy production (MWh) through the use of trapezoidal numerical integration which is implemented into the code. The annual output is then used to calculate the capacity factor of the plant. This is then plotted to display the data over a 30-day period. 
 For solar energy, hourly shortwave radiation data (W/m^2) from Open-Meteo is used as the resource input. A simplified PV model is applied to convert irradiance into electrical power using the area of the panel array and the overall efficiency of the system. The resulting data is integrated using the same trapezoidal method to recieve an estimated total annual energy production (kWh). A seven day period is plotted based on the data from the first seven days of 2025. 
 
-Phase 2:
+**Phase 2:**
+The second part of the notebook starts by reading the geothermal dataset and converts the data from MW to W. Using the converted values, a simple time array is created. 
+Next, the code creates a simplified model based on the populations baseline demand and daily fluctuation which produces the amplitude. Together thes evalues create a sinusoidal model for the first 7 days of 2025 with added noise to immitate small changes in power production. 
+Then, a storage dispatch model is created using the parameters S_max_J, C_rate_charge, P_charge_max, C_rate_discharge, and P_discharge_max to determine how excess power can be stored in a battery. S_max_J is created using the baseline value and the hours the battery should able to support the population for. C_rate_charge and C_rate_discharge describe the C-values for the battery to implement along with S_max_J to find the P_charge_max and P_discharge_max. These determine the rate at which the battery charges from excess energy and the rate at which it discharges when excess power is required. Together, these parameters create a plot comparing stored energy (MWh) to hours, as well as an estimate for the fraction of hours where energy demand is met. 
+Finally, a continuous-time ODE is computed using SciPy, using the same parameters as the discrete-time storage model to produce a similar plot. The ODE curve produces a simulation with much smaller time steps for improved accuracy where the Runge-Kutta method is applied. This takes the weighted average of various slopes by taking approximate solutions to ODEs along the curve with limited rates. 
